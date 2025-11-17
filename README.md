@@ -1,4 +1,3 @@
-````
 # HyperFocus – Deep Work & Interruptions Analytics API
 
 HyperFocus is a backend API designed to help remote workers and students understand **how they actually focus** during their workday.
@@ -419,5 +418,3 @@ While building HyperFocus I practiced:
 
 This project is licensed under the **MIT License**.
 See the [LICENSE](./LICENSE) file for details.
-
-```
