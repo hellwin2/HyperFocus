@@ -1,3 +1,5 @@
+![Tests](https://github.com/victormarlor/HyperFocus/actions/workflows/tests.yml/badge.svg)
+
 # HyperFocus – Deep Work & Interruptions Analytics API
 
 HyperFocus is a backend API designed to help remote workers and students understand **how they actually focus** during their workday.
