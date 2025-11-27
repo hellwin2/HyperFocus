@@ -21,7 +21,8 @@ const APPLE_COLORS = {
 const PIE_COLORS = [APPLE_COLORS.move, APPLE_COLORS.exercise, APPLE_COLORS.stand, APPLE_COLORS.purple, APPLE_COLORS.orange];
 
 export default function DashboardPage() {
-  const { user } = useAuthStore();
+  // const { user } = useAuthStore(); // user unused
+
   
   // State
   const [summary, setSummary] = useState(null);

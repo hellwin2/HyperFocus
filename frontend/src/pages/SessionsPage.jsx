@@ -72,7 +72,7 @@ export default function SessionsPage() {
       localStorage.removeItem(`session_${activeSession.id}_duration`);
       setTargetDuration(null);
       fetchSessions();
-    } catch (error) {
+    } catch {
       alert("Error ending session");
     }
   };
