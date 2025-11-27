@@ -1,36 +1,27 @@
-from datetime import datetime, timedelta, date, time, timezone
-
+from datetime import datetime, date, time, timezone
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlmodel import Session as DBSession, select
 
+from app.core.deps import get_current_user
 from app.db import get_session
 from app.models import Session as WorkSession, User
 from app.schemas import SessionStart, SessionRead
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
 
-
 @router.post("/start", response_model=SessionRead, status_code=status.HTTP_201_CREATED)
 def start_session(
     session_in: SessionStart,
     db: DBSession = Depends(get_session),
+    current_user: User = Depends(get_current_user),
 ):
     """
-    Crea una nueva sesión de trabajo para un usuario.
-    - Si start_time no se envía, se usa la hora actual (UTC).
-    - No permite que un usuario tenga dos sesiones activas al mismo tiempo.
+    Start a new work session for the current user.
     """
-    user = db.get(User, session_in.user_id)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found",
-        )
-
-    # Comprobar si ya hay una sesión activa (end_time == None) para este usuario
+    # Check if user already has an active session
     active_session = db.exec(
         select(WorkSession).where(
-            WorkSession.user_id == session_in.user_id,
+            WorkSession.user_id == current_user.id,
             WorkSession.end_time.is_(None),
         )
     ).first()
@@ -44,7 +35,7 @@ def start_session(
     start_time = session_in.start_time or datetime.now(timezone.utc)
 
     new_session = WorkSession(
-        user_id=session_in.user_id,
+        user_id=current_user.id,
         start_time=start_time,
     )
 
@@ -54,22 +45,26 @@ def start_session(
 
     return new_session
 
-
 @router.post("/{session_id}/end", response_model=SessionRead)
 def end_session(
     session_id: int,
     db: DBSession = Depends(get_session),
+    current_user: User = Depends(get_current_user),
 ):
     """
-    Finaliza una sesión de trabajo.
-    - Establece end_time a la hora actual (UTC).
-    - Si la sesión ya está finalizada, devuelve error.
+    End a work session.
     """
     work_session = db.get(WorkSession, session_id)
     if not work_session:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Session not found",
+        )
+    
+    if work_session.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions",
         )
 
     if work_session.end_time is not None:
@@ -85,46 +80,19 @@ def end_session(
 
     return work_session
 
-
-@router.get("/{session_id}", response_model=SessionRead)
-def get_session_by_id(
-    session_id: int,
-    db: DBSession = Depends(get_session),
-):
-    """
-    Obtiene una sesión específica por ID.
-    """
-    work_session = db.get(WorkSession, session_id)
-    if not work_session:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Session not found",
-        )
-    return work_session
-
-
-@router.get("/user/{user_id}", response_model=list[SessionRead])
-def get_sessions_for_user(
-    user_id: int,
+@router.get("/", response_model=list[SessionRead])
+def get_my_sessions(
     day: date | None = Query(
         default=None,
-        description="Día específico en formato YYYY-MM-DD para filtrar las sesiones por fecha de inicio.",
+        description="Filter by day (YYYY-MM-DD).",
     ),
     db: DBSession = Depends(get_session),
+    current_user: User = Depends(get_current_user),
 ):
     """
-    Obtiene las sesiones de un usuario.
-    - Si 'day' se proporciona, filtra las sesiones cuyo start_time esté dentro de ese día.
-    - Si no se proporciona, devuelve todas las sesiones del usuario.
+    Get all sessions for the current user.
     """
-    user = db.get(User, user_id)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found",
-        )
-
-    query = select(WorkSession).where(WorkSession.user_id == user_id)
+    query = select(WorkSession).where(WorkSession.user_id == current_user.id)
 
     if day is not None:
         day_start = datetime.combine(day, time.min)
@@ -134,7 +102,28 @@ def get_sessions_for_user(
             WorkSession.start_time <= day_end,
         )
 
-    query = query.order_by(WorkSession.start_time)
-
+    query = query.order_by(WorkSession.start_time.desc())
     sessions = db.exec(query).all()
     return sessions
+
+@router.get("/{session_id}", response_model=SessionRead)
+def get_session_by_id(
+    session_id: int,
+    db: DBSession = Depends(get_session),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Get a specific session by ID.
+    """
+    work_session = db.get(WorkSession, session_id)
+    if not work_session:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Session not found",
+        )
+    if work_session.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions",
+        )
+    return work_session

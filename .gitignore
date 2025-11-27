@@ -49,3 +49,9 @@ $RECYCLE.BIN/
 
 # macOS
 .DS_Store
+
+# ---- Security ----
+.env
+.env.prod
+.env.dev
+secrets.json

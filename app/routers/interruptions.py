@@ -1,24 +1,24 @@
 from datetime import datetime
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session as DBSession, select
 
+from app.core.deps import get_current_user
 from app.db import get_session
 from app.models import Interruption, Session as WorkSession, User
 from app.schemas import InterruptionCreate, InterruptionRead
 
 router = APIRouter(prefix="/interruptions", tags=["interruptions"])
 
-
 @router.post("/", response_model=InterruptionRead, status_code=status.HTTP_201_CREATED)
 def create_interruption(
     interruption_in: InterruptionCreate,
     db: DBSession = Depends(get_session),
+    current_user: User = Depends(get_current_user),
 ):
     """
-    Registra una interrupción en una sesión activa.
+    Register an interruption in an active session.
     """
-    # Comprobar que la sesión existe
+    # Check if session exists
     work_session = db.get(WorkSession, interruption_in.session_id)
     if not work_session:
         raise HTTPException(
@@ -26,21 +26,21 @@ def create_interruption(
             detail="Session not found",
         )
 
-    # Comprobar que pertenece al usuario indicado
-    if work_session.user_id != interruption_in.user_id:
+    # Check if session belongs to current user
+    if work_session.user_id != current_user.id:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Interruption user_id does not match session user_id",
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions",
         )
 
-    # Comprobar que la sesión está activa
+    # Check if session is active
     if work_session.end_time is not None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Cannot add interruptions to a finished session",
         )
 
-    # Calcular duración
+    # Calculate duration
     duration = int(
         (interruption_in.end_time - interruption_in.start_time).total_seconds()
     )
@@ -53,7 +53,7 @@ def create_interruption(
 
     interruption = Interruption(
         session_id=interruption_in.session_id,
-        user_id=interruption_in.user_id,
+        user_id=current_user.id,
         type=interruption_in.type.value,
         description=interruption_in.description,
         start_time=interruption_in.start_time,
@@ -67,20 +67,26 @@ def create_interruption(
 
     return interruption
 
-
 @router.get("/session/{session_id}", response_model=list[InterruptionRead])
 def get_interruptions_for_session(
     session_id: int,
     db: DBSession = Depends(get_session),
+    current_user: User = Depends(get_current_user),
 ):
     """
-    Lista todas las interrupciones de una sesión dada.
+    List all interruptions for a given session.
     """
     session = db.get(WorkSession, session_id)
     if not session:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Session not found",
+        )
+    
+    if session.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions",
         )
 
     interruptions = db.exec(

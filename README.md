@@ -1,422 +1,237 @@
-![Tests](https://github.com/victormarlor/HyperFocus/actions/workflows/tests.yml/badge.svg)
+![Tests](https://github.com/victormarlor/HyperFocus/actions/workflows/ci.yml/badge.svg)
 
-# HyperFocus – Deep Work & Interruptions Analytics API
+# 🧠 HyperFocus
+### Master Your Deep Work. Track Your Interruptions.
 
-HyperFocus is a backend API designed to help remote workers and students understand **how they actually focus** during their workday.
+**HyperFocus** is not just another time tracker. It is a **Full-Stack Analytics Platform** designed for remote workers, developers, and students who want to understand the *science* behind their productivity. 
 
-It lets a user:
-
-- Start and end *focus sessions*
-- Log *interruptions* (phone, family, noise, self-distractions, urgent tasks…)
-- Generate **analytics** about:
-  - Total focused time vs. time lost
-  - Which interruption types affect them the most
-  - At what hours they are most productive
-  - When they get most distracted
-  - Weekly concentration patterns
+We all feel busy, but are we **productive**? HyperFocus helps you answer that question by tracking your "Deep Work" sessions and analyzing exactly what breaks your flow—whether it's a phone call, a family member, or your own wandering mind.
 
 ---
 
-## 💡 Problem
+## ✨ Key Features
 
-People who work or study remotely get interrupted all the time:
+### 🛡️ Enterprise-Grade Security
+*   **Secure Authentication**: Built with **OAuth2** and **JWT** (JSON Web Tokens).
+*   **Data Protection**: Passwords hashed with **Argon2**, the winner of the Password Hashing Competition.
+*   **Role-Based Access**: Granular permissions for Users and Admins.
 
-- Family or roommates
-- Phone notifications
-- Noise
-- “Quick” urgent tasks
-- Self-distractions (social media, random browsing, etc.)
+### ⏱️ Seamless Focus Tracking
+*   **Focus Timer (Pomodoro)**: Built-in timer with presets (25m, 50m) and visual progress ring.
+*   **One-Click Sessions**: Start a "Deep Work" session instantly.
+*   **Frictionless Interruption Logging**: Log distractions in seconds without losing your context.
 
-We all *feel* less productive, but it's hard to **measure**:
+### 📊 Professional Analytics Dashboard
+*   **AI Insights 🧠**: Local intelligence engine that analyzes your patterns to give personalized productivity tips.
 
-- How much time we really work vs. lose  
-- Which sources of interruption hurt us the most  
-- When (time of day or week) we struggle to focus  
+*   **Productivity Score**: A proprietary algorithm that scores your focus quality (0-100).
+*   **Interruption Breakdown**: Visual Pie Charts identifying your top distractors.
+*   **Peak Performance Hours**: Heatmaps showing *when* you are most productive.
 
-**HyperFocus** converts those everyday interruptions into meaningful metrics and patterns you can act on.
-
----
-
-## 🎯 What This API Does
-
-Core capabilities:
-
-- ✅ Manage users  
-- ✅ Track focus sessions per user  
-- ✅ Log interruptions inside a session  
-- ✅ Automatically compute interruption duration  
-- ✅ Compute advanced analytics:
-  - Summary: total work time, time lost, effective focus time
-  - Breakdown by interruption type
-  - Productivity by hour of day
-  - Peak distraction hour
-  - Weekly concentration pattern
-
-The focus is not just CRUD, but **useful analytics** that reflect real human behavior.
+### 🎨 Premium User Experience
+*   **Modern UI**: Built with **React** and **Vite** for blazing fast performance.
+*   **Dark Mode Native**: Designed for late-night coding sessions with a custom-tuned dark palette.
+*   **Fully Responsive**: Works perfectly on your Desktop, Tablet, and Mobile.
 
 ---
 
-## 🧱 Tech Stack
+## 🏗️ Tech Stack
 
-- **Language:** Python  
-- **Framework:** FastAPI  
-- **ORM:** SQLModel (SQLAlchemy + Pydantic)  
-- **Database:** SQLite  
-- **Schemas:** Pydantic v2  
-- **Testing:** Pytest + FastAPI TestClient  
-- **Containerization:** Docker  
-- **Docs:** Auto-generated OpenAPI (Swagger UI)
+This project was built using industry-standard best practices and modern technologies.
 
----
+### Backend (The Brain)
+*   **Language**: Python 3.11+
+*   **Framework**: [FastAPI](https://fastapi.tiangolo.com/) (High performance, easy to learn)
+*   **Database**: SQLite (Dev) / PostgreSQL (Prod ready)
+*   **ORM**: [SQLModel](https://sqlmodel.tiangolo.com/) (The power of SQLAlchemy + Pydantic)
+*   **Testing**: Pytest, Factory Boy
 
-## 📁 Project Structure
+### Frontend (The Face)
+*   **Framework**: [React](https://react.dev/) 18
+*   **Build Tool**: [Vite](https://vitejs.dev/)
+*   **State Management**: [Zustand](https://github.com/pmndrs/zustand) (Simple, scalable state)
+*   **Routing**: React Router v6
+*   **Visualization**: Recharts
+*   **Styling**: Modern CSS Variables & Responsive Design
 
-```
-hyperfocus/
-├─ app/
-│  ├─ main.py                 # FastAPI app, lifespan, router registration
-│  ├─ models.py               # SQLModel models (User, Session, Interruption)
-│  ├─ schemas.py              # Pydantic schemas (input/output)
-│  ├─ db.py                   # DB engine, session dependency, table creation
-│  ├─ core/
-│  │   ├─ stats_logic.py      # All analytics and statistics logic
-│  │   └─ config.py           # (Reserved for future configuration)
-│  └─ routers/
-│      ├─ users.py            # /users endpoints
-│      ├─ sessions.py         # /sessions endpoints
-│      ├─ interruptions.py    # /interruptions endpoints
-│      └─ stats.py            # /users/{id}/stats endpoints
-├─ tests/
-│  ├─ test_interruptions_api.py  # End-to-end API tests (user → session → interruption)
-│  ├─ test_stats_logic.py        # Unit tests for analytics logic
-│  └─ conftest.py                # Test DB setup (in-memory SQLite)
-├─ requirements.txt
-├─ Dockerfile
-└─ README.md
-````
+### DevOps (The Engine)
+*   **Containerization**: Docker & Docker Compose
+*   **CI/CD**: GitHub Actions (Automated Testing & Linting)
+*   **Deployment**: Ready for Railway (Backend) & Vercel (Frontend)
 
 ---
 
-## 🗄️ Data Model
+## 🚀 Replication Guide (How to Run This Project)
 
-### `User`
+Want to run HyperFocus on your own machine? Follow these steps.
 
-Represents a person using the system.
+### Prerequisites
+*   **Docker** (Recommended) OR **Python 3.11+** & **Node.js 18+**
+*   **Git**
 
-* `id`: int (PK)
-* `name`: str
-* `email`: str (unique)
-* `created_at`: datetime (UTC)
+### Option A: The "I want it running NOW" Method (Docker) 🐳
 
----
+This will spin up the Backend, Frontend, and Database in isolated containers.
 
-### `Session` (Focus Session)
+1.  **Clone the Repository**
+    ```bash
+    git clone https://github.com/victormarlor/HyperFocus.git
+    cd HyperFocus
+    ```
 
-Represents a block of focused work.
+2.  **Launch with Docker Compose**
+    ```bash
+    docker-compose up --build
+    ```
 
-* `id`: int (PK)
-* `user_id`: FK → `User`
-* `start_time`: datetime
-* `end_time`: datetime | null (null = still active)
-* `created_at`: datetime
-
-Rules:
-
-* A user cannot have **two active sessions** at the same time.
-
----
-
-### `Interruption`
-
-Represents a single interruption inside a session.
-
-* `id`: int (PK)
-* `session_id`: FK → `Session`
-* `user_id`: FK → `User`
-* `type`: `"family" | "phone" | "noise" | "self" | "urgent_task" | "unknown"`
-* `description`: str
-* `start_time`: datetime
-* `end_time`: datetime
-* `duration`: int (seconds, computed automatically)
-* `created_at`: datetime
-
-Constraints:
-
-* Every interruption belongs to exactly one session.
-* `end_time` must be greater than `start_time`.
+3.  **That's it!**
+    *   **Frontend**: Open [http://localhost](http://localhost)
+    *   **Backend API**: [http://localhost:8000](http://localhost:8000)
+    *   **API Documentation**: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
-## 🚀 Getting Started
+### Option B: The "Hacker" Method (Manual Setup) 💻
 
-### 1. Clone the repo
+If you want to develop or modify the code, run the services locally.
 
-```
-git clone https://github.com/<your-username>/hyperfocus.git
-cd hyperfocus
-```
+#### 1. Backend Setup
 
-### 2. Create and activate a virtual environment
+```bash
+# Navigate to the project root
+cd HyperFocus
 
-**Windows (PowerShell):**
-
-```
-py -m venv venv
-.\venv\Scripts\Activate
-```
-
-**macOS / Linux:**
-
-```
+# Create a virtual environment
 python -m venv venv
+
+# Activate it
+# Windows:
+.\venv\Scripts\Activate
+# Mac/Linux:
 source venv/bin/activate
-```
 
-### 3. Install dependencies
-
-```
+# Install dependencies
 pip install -r requirements.txt
-```
 
-### 4. Run the development server
-
-```
+# Run the server
 uvicorn app.main:app --reload
 ```
+*The API is now running at `http://localhost:8000`*
 
-Access:
+#### 2. Frontend Setup
 
-* Swagger UI: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-* ReDoc: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
-* Health check: `GET /` → `{"message": "HyperFocus API is running 🚀"}`
+Open a new terminal window.
+
+```bash
+# Navigate to the frontend directory
+cd frontend
+
+# Install Node dependencies
+npm install
+
+# Start the development server
+npm run dev
+```
+*The App is now running at `http://localhost:5173`*
 
 ---
 
-## 🐳 Run with Docker (optional)
+## 🧪 Quality Assurance
 
-Build the image:
+We maintain high code quality standards. You can run our test suites to verify everything is working.
 
-```
-docker build -t hyperfocus-api .
-```
-
-Run the container:
-
-```
-docker run -p 8000:8000 hyperfocus-api
-```
-
-API will be available at `http://127.0.0.1:8000`.
-
----
-
-## 📌 Core API Overview
-
-### 👤 Users
-
-**Create user**
-
-```
-POST /users/
-```
-
-Body example:
-
-```
-{ "name": "Victor", "email": "victor@example.com" }
-```
-
-**Get user by ID**
-
-```
-GET /users/{id}
-```
-
----
-
-### ⏱ Sessions
-
-**Start a session**
-
-```
-POST /sessions/start
-```
-
-Body:
-
-```
-{ "user_id": 1 }
-```
-
-Rules:
-
-* If the user already has an active session → HTTP 400.
-
-**End a session**
-
-```
-POST /sessions/{id}/end
-```
-
-**Get a session**
-
-```
-GET /sessions/{id}
-```
-
-**List user sessions (optional day filter)**
-
-```
-GET /sessions/user/{user_id}?day=YYYY-MM-DD
-```
-
----
-
-### ❗ Interruptions
-
-**Create interruption**
-
-```
-POST /interruptions/
-```
-
-Example:
-
-```
-{
-  "session_id": 1,
-  "user_id": 1,
-  "type": "phone",
-  "description": "WhatsApp messages",
-  "start_time": "2025-11-15T16:00:00Z",
-  "end_time": "2025-11-15T16:02:30Z"
-}
-```
-
-Backend automatically:
-
-* Validates session ownership
-* Ensures session is active
-* Ensures `end_time > start_time`
-* Computes `duration`
-
-**List interruptions**
-
-```
-GET /interruptions/session/{session_id}
-```
-
----
-
-## 📊 Statistics (Analytics)
-
-All under:
-
-```
-/users/{user_id}/stats/...
-```
-
-### Available Endpoints
-
-| Endpoint                       | Description                         |
-| ------------------------------ | ----------------------------------- |
-| `/stats/summary`               | High-level focus summary            |
-| `/stats/interruption-types`    | Counts & proportions by type        |
-| `/stats/productive-hours`      | Focus vs. distractions by hour      |
-| `/stats/peak-distraction-time` | Hour of day with most interruptions |
-| `/stats/weekly-pattern`        | Monday–Sunday focus overview        |
-
----
-
-### Summary Example
-
-`GET /users/{user_id}/stats/summary?range=7d`
-
-Includes:
-
-* `total_sessions`
-* `total_interruptions`
-* `total_time_worked_seconds`
-* `total_time_lost_seconds`
-* `effective_time_seconds`
-* `average_interruption_duration_seconds`
-* `interruptions_per_hour`
-
----
-
-### Weekly Pattern Example
-
-Each entry contains:
-
-```
-{
-  "weekday_index": 0,
-  "weekday_name": "monday",
-  "work_seconds": 5400,
-  "time_lost_seconds": 600,
-  "effective_time_seconds": 4800,
-  "interruptions": 3
-}
-```
-
----
-
-## 🧪 Testing
-
-Run all tests:
-
-```
+**Backend Tests:**
+```bash
 pytest
 ```
 
-Includes:
-
-* **Unit tests** for analytics (`test_stats_logic.py`)
-* **Integration tests** for the interruption flow (`test_interruptions_api.py`)
-* **In-memory DB** using `sqlite://` + `StaticPool`
-* `TestClient` with dependency overrides
-
----
-
-## 🧠 Design Decisions
-
-* **SQLModel** chosen for strong typing + declarative models.
-* **UTC timezone-aware datetimes** for reliable time calculations.
-* **Separation of concerns**:
-
-  * Routers → HTTP logic
-  * Models/Schemas → data layer
-  * `stats_logic.py` → business & analytics
-* **Layered validation** (schemas → API → DB constraints).
-* **Tests** ensure analytics work exactly as expected.
+**Frontend Tests:**
+```bash
+cd frontend
+npm test
+```
 
 ---
 
-## 🚧 Future Improvements
+## 📂 Project Structure
 
-* Authentication (JWT)
-* Rate limiting
-* Export stats (CSV / JSON)
-* A dashboard frontend
-* More advanced analytics (focus score)
-* Deployment on Fly.io / Railway with Docker
+A detailed look at the architecture:
+
+```
+HyperFocus/
+├── .github/
+│   └── workflows/
+│       └── ci.yml            # CI/CD Pipeline configuration
+├── app/                      # FastAPI Backend Source
+│   ├── core/
+│   │   ├── config.py         # Environment configuration
+│   │   ├── deps.py           # Dependency Injection
+│   │   ├── logging_config.py # Logger setup
+│   │   ├── security.py       # JWT & Password hashing
+│   │   └── stats_logic.py    # Analytics business logic
+│   ├── routers/
+│   │   ├── auth.py           # Authentication endpoints
+│   │   ├── interruptions.py  # Interruption management
+│   │   ├── sessions.py       # Session management
+│   │   ├── stats.py          # Statistics endpoints
+
+│   │   └── users.py          # User management
+│   ├── db.py                 # Database connection
+│   ├── main.py               # App entry point
+│   ├── models.py             # SQLModel Database Models
+│   └── schemas.py            # Pydantic Data Schemas
+├── frontend/                 # React Frontend Source
+│   ├── src/
+│   │   ├── api/
+│   │   │   └── axios.js      # Axios instance with interceptors
+│   │   ├── components/
+│   │   │   ├── features/     # Feature Widgets (Timer, Insights)
+│   │   │   ├── layout/       # Layout & Sidebar components
+│   │   │   └── ui/           # Reusable UI (Buttons, Inputs, Cards)
+│   │   ├── pages/
+│   │   │   ├── DashboardPage.jsx
+│   │   │   ├── LoginPage.jsx
+│   │   │   ├── RegisterPage.jsx
+│   │   │   └── SessionsPage.jsx
+│   │   ├── store/
+│   │   │   └── authStore.js  # Zustand Auth Store
+│   │   ├── styles/
+│   │   │   ├── layout.css    # Responsive Layout Styles
+│   │   │   └── theme.css     # CSS Variables & Dark Mode
+│   │   ├── App.jsx           # Main App Component & Routing
+│   │   └── main.jsx          # React Entry Point
+│   ├── Dockerfile            # Frontend Dockerfile (Nginx)
+│   ├── package.json          # Frontend Dependencies
+│   └── vite.config.js        # Vite Configuration
+├── tests/                    # Backend Integration Tests
+│   ├── conftest.py           # Test Fixtures
+│   ├── test_auth.py          # Auth Tests
+│   ├── test_interruptions_api.py
+│   └── test_stats_logic.py
+├── .dockerignore             # Docker exclusion list
+├── .gitignore                # Git exclusion list
+├── docker-compose.yml        # Docker Orchestration
+├── Dockerfile                # Backend Dockerfile
+├── railway.toml              # Railway Deployment Config
+├── requirements.txt          # Backend Dependencies
+└── README.md                 # Project Documentation
+```
 
 ---
 
-## 🧾 What I Learned
+## 🔮 Future Roadmap
 
-While building HyperFocus I practiced:
+*   [x] **Focus Timer**: Pomodoro integration directly in the session view.
 
-* Modeling a real-world domain (focus sessions & interruptions)
-* Clean FastAPI architecture
-* SQLModel relationships
-* UTC datetime handling
-* Separation of analytics logic
-* Writing both unit and end-to-end API tests
+*   [x] **AI Insights**: Local heuristics engine to improve your workflow.
+*   [ ] **Mobile App**: Native React Native application.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License**.
-See the [LICENSE](./LICENSE) file for details.
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+---
+
+*Built with ❤️ by Victormarlor*

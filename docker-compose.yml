@@ -1,0 +1,27 @@
+services:
+  backend:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./hyperfocus.db:/app/hyperfocus.db
+      - ./app:/app/app
+    environment:
+      - DATABASE_URL=sqlite:///./hyperfocus.db
+    networks:
+      - hyperfocus-network
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend/dist:/usr/share/nginx/html
+    depends_on:
+      - backend
+    networks:
+      - hyperfocus-network
+
+networks:
+  hyperfocus-network:
+    driver: bridge

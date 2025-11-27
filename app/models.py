@@ -11,7 +11,10 @@ class User(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(index=True, max_length=100)
     email: str = Field(index=True, unique=True, max_length=255)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    hashed_password: str = Field(nullable=False)
+    is_active: bool = Field(default=True)
+    is_superuser: bool = Field(default=False)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     # Relaciones
     sessions: List["Session"] = Relationship(back_populates="user")
@@ -27,7 +30,7 @@ class Session(SQLModel, table=True):
 
     start_time: datetime = Field(index=True)
     end_time: Optional[datetime] = Field(default=None, index=True)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     # Relaciones
     user: Optional[User] = Relationship(back_populates="sessions")

@@ -7,14 +7,13 @@ ENV PYTHONUNBUFFERED=1
 # Set workdir inside the container
 WORKDIR /app
 
-# Install system deps (optional but useful for some Python packages)
+# Install system deps (needed for argon2 build sometimes, though wheels usually exist)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install dependencies
 COPY requirements.txt .
-
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the project

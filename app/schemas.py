@@ -7,7 +7,6 @@ from pydantic import (
     EmailStr,
     Field,
     ValidationInfo,
-    FieldValidationInfo,
     field_validator,
     ConfigDict
 )
@@ -17,12 +16,24 @@ from pydantic import (
 # ============================================================
 
 class InterruptionType(str, Enum):
-    family = "family"
-    phone = "phone"
-    noise = "noise"
-    self = "self"
-    urgent_task = "urgent_task"
+    external = "external"
+    digital = "digital"
+    internal = "internal"
+    other = "other"
+    # Legacy support if needed, but we'll stick to these new ones
     unknown = "unknown"
+
+
+# ============================================================
+# Token Schemas
+# ============================================================
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenPayload(BaseModel):
+    sub: Optional[str] = None
 
 
 # ============================================================
@@ -39,11 +50,30 @@ class UserCreate(UserBase):
     """
     Datos necesarios para crear un usuario.
     """
-    pass
+    password: str = Field(min_length=8)
+
+    model_config: ClassVar[ConfigDict] = ConfigDict(json_schema_extra={
+        "example": {
+            "name": "Victor",
+            "email": "victor@example.com",
+            "password": "strongpassword123"
+        }
+    })
+
+
+class UserUpdate(UserBase):
+    password: Optional[str] = Field(default=None, min_length=8)
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
 
 
 class UserRead(UserBase):
+    """
+    Datos públicos de un usuario.
+    """
     id: int
+    is_active: bool
+    is_superuser: bool
     created_at: datetime
 
     model_config: ClassVar[ConfigDict] = ConfigDict(from_attributes=True)
@@ -56,11 +86,15 @@ class UserRead(UserBase):
 class SessionStart(BaseModel):
     """
     Esquema para iniciar una sesión de trabajo.
-    El user_id es obligatorio.
     start_time se puede enviar o, si es None, se establecerá en "ahora" en la lógica.
     """
-    user_id: int
     start_time: Optional[datetime] = None
+
+    model_config: ClassVar[ConfigDict] = ConfigDict(json_schema_extra={
+        "example": {
+            "start_time": "2025-11-25T10:00:00Z"
+        }
+    })
 
 
 class SessionRead(BaseModel):
@@ -80,7 +114,6 @@ class SessionRead(BaseModel):
 
 class InterruptionBase(BaseModel):
     session_id: int
-    user_id: int
     type: InterruptionType = Field(description="Tipo de interrupción")
     description: Annotated[str, Field(min_length=1, max_length=500)]
     start_time: datetime
@@ -104,6 +137,16 @@ class InterruptionCreate(InterruptionBase):
     El cliente NO envía duration: el backend lo calculará como (end_time - start_time).
     """
     pass
+
+    model_config: ClassVar[ConfigDict] = ConfigDict(json_schema_extra={
+        "example": {
+            "session_id": 1,
+            "type": "phone",
+            "description": "WhatsApp messages",
+            "start_time": "2025-11-25T10:15:00Z",
+            "end_time": "2025-11-25T10:17:30Z"
+        }
+    })
 
 
 class InterruptionRead(BaseModel):
