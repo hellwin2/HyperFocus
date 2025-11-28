@@ -141,7 +141,7 @@ class InterruptionCreate(InterruptionBase):
     model_config: ClassVar[ConfigDict] = ConfigDict(json_schema_extra={
         "example": {
             "session_id": 1,
-            "type": "phone",
+            "type": "digital",
             "description": "WhatsApp messages",
             "start_time": "2025-11-25T10:15:00Z",
             "end_time": "2025-11-25T10:17:30Z"

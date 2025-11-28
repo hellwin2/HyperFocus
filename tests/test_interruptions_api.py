@@ -25,7 +25,7 @@ def test_create_session_and_interruption(auth_client, sample_user):
         "/api/v1/interruptions/",
         json={
             "session_id": session_id,
-            "type": "phone",
+            "type": "digital",
             "description": "WhatsApp messages",
             "start_time": start.isoformat(),
             "end_time": end.isoformat(),
@@ -62,7 +62,7 @@ def test_interruption_rejects_wrong_session(auth_client, client, db_session):
         "/api/v1/interruptions/",
         json={
             "session_id": other_session.id,
-            "type": "noise",
+            "type": "external",
             "description": "Noise test",
             "start_time": start.isoformat(),
             "end_time": end.isoformat(),
