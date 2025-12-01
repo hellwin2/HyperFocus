@@ -19,7 +19,9 @@ export const useAuthStore = create(
                     params.append('username', email);
                     params.append('password', password);
 
-                    const response = await api.post('/login/access-token', params);
+                    const response = await api.post('/login/access-token', params, {
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                    });
 
                     const { access_token } = response.data;
                     set({ token: access_token, isAuthenticated: true });
