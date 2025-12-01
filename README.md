@@ -9,6 +9,18 @@ We all feel busy, but are we **productive**? HyperFocus helps you answer that qu
 
 ---
 
+## 🚀 Live Demo
+
+Try the application live here: **[https://hyper-focus-six.vercel.app/](https://hyper-focus-six.vercel.app/)**
+
+> [!WARNING]
+> **Free Tier Limitations**:
+> *   **Cold Starts**: The backend is hosted on Render's free tier. If the API hasn't been used for a while, the first request may take **50+ seconds** to wake up. Please be patient! ⏳
+> *   **Performance**: The database and server run on minimal resources (shared CPU/RAM). Heavy usage might cause slowness.
+> *   **Data Persistence**: While data is saved, this is a demo environment. Do not use for critical production data.
+
+---
+
 ## ✨ Key Features
 
 ### 🛡️ Enterprise-Grade Security
