@@ -24,6 +24,14 @@ engine = create_engine(
     connect_args=connect_args,
 )
 
+# Log the database we are connecting to (security safe)
+if "sqlite" in DATABASE_URL:
+    print(f"💽 Database: SQLite (Local)")
+else:
+    # Hide password, show host
+    safe_url = DATABASE_URL.split("@")[-1]
+    print(f"🐘 Database: PostgreSQL ({safe_url})")
+
 
 def create_db_and_tables() -> None:
     """
