@@ -7,15 +7,21 @@ from sqlmodel import SQLModel, Session, create_engine
 from .models import User, Session as WorkSession, Interruption  # 👈 añade esta línea
 
 
-# URL de la base de datos SQLite.
-# El archivo se guardará en la raíz del proyecto como "hyperfocus.db"
-DATABASE_URL = "sqlite:///./hyperfocus.db"
+from app.core.config import settings
 
-# El parámetro check_same_thread=False es necesario para usar SQLite con FastAPI/Uvicorn
+# Use the DATABASE_URL from settings (which reads from env vars)
+# If it starts with "postgres://", replace it with "postgresql://" for SQLAlchemy compatibility
+DATABASE_URL = settings.DATABASE_URL
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+# Configure engine based on DB type
+connect_args = {"check_same_thread": False} if "sqlite" in DATABASE_URL else {}
+
 engine = create_engine(
     DATABASE_URL,
-    echo=False,  # pon True si quieres ver las queries en consola mientras desarrollas
-    connect_args={"check_same_thread": False},
+    echo=False,
+    connect_args=connect_args,
 )
 
 
